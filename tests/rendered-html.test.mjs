@@ -30,8 +30,10 @@ test("server-renders the skill workbench shell", async () => {
 
   const html = await response.text();
   assert.match(html, /词刷刷 Skill 生产工作台/);
-  assert.match(html, /1\. 选择你要做执行的操作/);
+  assert.match(html, /1\. 选择你要执行的操作/);
   assert.match(html, /2\. 拖动你要上传的文件/);
+  assert.match(html, /3\. 运行当前模块/);
+  assert.match(html, /4\. 运行结果/);
   assert.match(html, /场景生成 Skill/);
   assert.match(html, /导演2\.0 Skill/);
   assert.match(html, /JSON 打包脚本/);

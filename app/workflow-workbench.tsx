@@ -372,43 +372,48 @@ export function WorkflowWorkbench() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-5 px-5 py-5 lg:grid-cols-[310px_1fr]">
-        <aside className="space-y-4">
-          <Panel title="1. 选择你要做执行的操作">
-            <div className="space-y-2">
-              {modules.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveModule(item.id)}
-                  className={`w-full rounded-lg border px-4 py-3 text-left transition ${
-                    activeModule === item.id
-                      ? "border-[#236f67] bg-[#236f67] text-white"
-                      : "border-[#d7d0c3] bg-white text-[#27332e] hover:border-[#236f67]"
-                  }`}
-                >
-                  <span className="text-xs font-semibold uppercase tracking-[0.16em] opacity-75">{item.index}</span>
-                  <span className="mt-1 block text-sm font-semibold">{item.title}</span>
-                  <span className="mt-1 block text-xs opacity-80">{item.label}</span>
-                  {activeModule === item.id ? (
-                    <span className="mt-3 block border-t border-white/25 pt-3 text-xs leading-5 opacity-90">
-                      {item.summary}
-                      <br />
-                      {item.usage.join(" ")}
-                      <br />
-                      输入：{item.inputs.join(" / ")}
-                      <br />
-                      输出：{item.outputs.join(" / ")}
-                    </span>
-                  ) : null}
-                </button>
+      <section className="mx-auto flex max-w-5xl flex-col gap-5 px-5 py-5">
+        <Panel title="1. 选择你要执行的操作">
+          <div className="grid gap-3 md:grid-cols-3">
+            {modules.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setActiveModule(item.id)}
+                className={`flex min-h-36 flex-col rounded-lg border px-5 py-4 text-left transition ${
+                  activeModule === item.id
+                    ? "border-[#236f67] bg-[#236f67] text-white shadow-sm"
+                    : "border-[#d7d0c3] bg-[#fffdf8] text-[#27332e] hover:border-[#236f67]"
+                }`}
+              >
+                <span className="text-xs font-semibold uppercase tracking-[0.16em] opacity-75">{item.index}</span>
+                <span className="mt-3 block text-base font-semibold">{item.title}</span>
+                <span className="mt-1 block text-sm opacity-80">{item.label}</span>
+                {activeModule === item.id ? (
+                  <span className="mt-4 block border-t border-white/25 pt-3 text-sm leading-6 opacity-90">
+                    {item.summary}
+                  </span>
+                ) : null}
+              </button>
+            ))}
+          </div>
+          <div className="mt-4 rounded-lg border border-[#d7d0c3] bg-[#fffdf8] p-4">
+            <h3 className="text-sm font-semibold">{active.title} 用法说明</h3>
+            <ul className="mt-3 space-y-2">
+              {active.usage.map((item) => (
+                <li key={item} className="flex gap-2 text-sm leading-6 text-[#53605a]">
+                  <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#236f67]" />
+                  <span>{item}</span>
+                </li>
               ))}
-            </div>
-          </Panel>
+            </ul>
+          </div>
+        </Panel>
 
-          <Panel title="2. 拖动你要上传的文件">
-            <label className="flex cursor-pointer flex-col items-center rounded-lg border border-dashed border-[#a7a092] bg-[#fffdf8] px-4 py-6 text-center transition hover:border-[#236f67] hover:bg-white">
-              <span className="text-sm font-semibold">上传 Excel / CSV / TSV / TXT</span>
-              <span className="mt-2 text-xs leading-5 text-[#68716d]">
+        <Panel title="2. 拖动你要上传的文件">
+          <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+            <label className="flex min-h-44 cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-[#a7a092] bg-[#fffdf8] px-4 py-6 text-center transition hover:border-[#236f67] hover:bg-white">
+              <span className="text-base font-semibold">上传 Excel / CSV / TSV / TXT</span>
+              <span className="mt-2 max-w-md text-sm leading-6 text-[#68716d]">
                 场景和导演模块使用表格；JSON 打包模块主要使用 Excel，也可粘贴备注。
               </span>
               <input
@@ -418,10 +423,10 @@ export function WorkflowWorkbench() {
                 onChange={(event) => void handleFile(event.target.files?.[0])}
               />
             </label>
-            {uploadedFile ? (
-              <div className="mt-3 rounded-lg border border-[#d7d0c3] bg-[#f8f4eb] p-3">
+            <div className="rounded-lg border border-[#d7d0c3] bg-[#f8f4eb] p-4">
+              {uploadedFile ? (
                 <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-white text-lg font-semibold text-[#236f67]">
+                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-md bg-white text-lg font-semibold text-[#236f67]">
                     {uploadedFile.kind === "text" ? "T" : "X"}
                   </span>
                   <div className="min-w-0">
@@ -431,18 +436,19 @@ export function WorkflowWorkbench() {
                     </div>
                   </div>
                 </div>
-              </div>
-            ) : (
-              <div className="mt-3 rounded-md bg-[#eee8dc] px-3 py-2 text-sm leading-6 text-[#5f5749]">
-                还没有上传文件。CSV/TSV 可在前端预览；Excel 会作为执行包输入传递给 skill。
-              </div>
-            )}
-          </Panel>
+              ) : (
+                <p className="text-sm leading-6 text-[#5f5749]">
+                  还没有上传文件。CSV/TSV 可在前端预览；Excel 会作为执行包输入传递给 skill。
+                </p>
+              )}
+            </div>
+          </div>
 
           {uploadedFile ? (
-            <Panel title={rows.length > 0 ? "真实解析预览" : "文件已就绪"}>
+            <div className="mt-4 rounded-lg border border-[#d7d0c3] bg-[#fffdf8] p-4">
+              <h3 className="text-sm font-semibold">{rows.length > 0 ? "真实解析预览" : "文件已就绪"}</h3>
               {rows.length > 0 ? (
-                <div className="space-y-2">
+                <div className="mt-3 grid gap-2 md:grid-cols-2">
                   {rows.slice(0, 5).map((row) => (
                     <div key={`${row.bookname}-${row.word}`} className="rounded-md border border-[#e2dbcf] bg-white p-3">
                       <div className="font-semibold">{row.word}</div>
@@ -451,45 +457,43 @@ export function WorkflowWorkbench() {
                   ))}
                 </div>
               ) : (
-                <p className="text-sm leading-6 text-[#5d6662]">
+                <p className="mt-2 text-sm leading-6 text-[#5d6662]">
                   当前文件不会在前端展示假数据。运行后，执行包会把文件名和解析要求传给对应 skill。
                 </p>
               )}
-            </Panel>
+            </div>
           ) : null}
-        </aside>
+        </Panel>
 
-        <section className="space-y-4">
-          <Panel title={`${active.index}. ${active.title}`} action={active.label}>
-            {activeModule === "scene" ? <RunnerModule kind="scene" onRun={runCurrent} /> : null}
-            {activeModule === "director" ? <RunnerModule kind="director" onRun={runCurrent} /> : null}
-            {activeModule === "compress" ? (
-              <PackagingModule value={compressText} onChange={setCompressText} onRun={runCurrent} />
-            ) : null}
-          </Panel>
+        <Panel title="3. 运行当前模块" action={active.label}>
+          {activeModule === "scene" ? <RunnerModule kind="scene" onRun={runCurrent} /> : null}
+          {activeModule === "director" ? <RunnerModule kind="director" onRun={runCurrent} /> : null}
+          {activeModule === "compress" ? (
+            <PackagingModule value={compressText} onChange={setCompressText} onRun={runCurrent} />
+          ) : null}
+        </Panel>
 
-          <Panel title="运行结果">
-            {lastOutput ? (
-              <div className="grid gap-4 xl:grid-cols-[1fr_220px]">
-                <pre className="max-h-[420px] overflow-auto rounded-lg bg-[#1f2825] p-4 text-xs leading-5 text-[#eaf2ee]">
-                  {JSON.stringify(lastOutput.payload, null, 2)}
-                </pre>
-                <div className="rounded-lg border border-[#d7d0c3] bg-[#fffdf8] p-4">
-                  <h3 className="text-sm font-semibold">可下载文件</h3>
-                  <p className="mt-2 text-sm leading-6 text-[#5d6662]">{lastOutput.fileName}</p>
-                  <button
-                    onClick={() => downloadJson(lastOutput)}
-                    className="mt-4 w-full rounded-lg bg-[#236f67] px-4 py-3 text-sm font-semibold text-white hover:bg-[#1b5a54]"
-                  >
-                    下载 JSON
-                  </button>
-                </div>
+        <Panel title="4. 运行结果">
+          {lastOutput ? (
+            <div className="grid gap-4 lg:grid-cols-[1fr_240px]">
+              <pre className="max-h-[420px] overflow-auto rounded-lg bg-[#1f2825] p-4 text-xs leading-5 text-[#eaf2ee]">
+                {JSON.stringify(lastOutput.payload, null, 2)}
+              </pre>
+              <div className="rounded-lg border border-[#d7d0c3] bg-[#fffdf8] p-4">
+                <h3 className="text-sm font-semibold">可下载文件</h3>
+                <p className="mt-2 text-sm leading-6 text-[#5d6662]">{lastOutput.fileName}</p>
+                <button
+                  onClick={() => downloadJson(lastOutput)}
+                  className="mt-4 w-full rounded-lg bg-[#236f67] px-4 py-3 text-sm font-semibold text-white hover:bg-[#1b5a54]"
+                >
+                  下载 JSON
+                </button>
               </div>
-            ) : (
-              <p className="text-sm leading-6 text-[#5d6662]">运行任一模块后，这里会显示结果预览和下载按钮。</p>
-            )}
-          </Panel>
-        </section>
+            </div>
+          ) : (
+            <p className="text-sm leading-6 text-[#5d6662]">运行任一模块后，这里会显示结果预览和下载按钮。</p>
+          )}
+        </Panel>
       </section>
     </main>
   );
