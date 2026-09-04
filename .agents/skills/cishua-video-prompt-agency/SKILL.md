@@ -13,6 +13,8 @@ Default to direct conversion. If the user provides many rows, process in batches
 
 Keep chat output short. Put large prompt tables, JSON packages, or QA reports into files when useful.
 
+For batch jobs, default to automatic style rotation unless the user explicitly requests one unified style or provides a valid style per row. The rotation must choose from the current valid style library, balance style usage across the batch, avoid repeating the same style in adjacent items, and record a scene-specific reason for every selected style.
+
 ## Flow
 
 1. Read [01-flow-controller.md](references/01-flow-controller.md) to choose the path, lock source fields, and decide which downstream agents are needed.

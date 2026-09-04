@@ -13,6 +13,8 @@
 - example_sentence
 - scene_script
 - optional_style
+- batch_style_history：批量任务中已选风格记录，可为空
+- batch_style_strategy：uniform / per-row / auto-rotation，默认 auto-rotation
 
 ## 任务
 
@@ -41,6 +43,27 @@
 - 画面质感只写渲染、光线、色彩和清晰度，不写人物动作。
 - 默认加入：9:16 竖版构图，避免生成任何无关文字、字幕、水印、Logo。
 
+## 批量自动轮换匹配
+
+当 batch_style_strategy 为 auto-rotation 时，不要逐条停下等待人工选择。每条 item 都必须从当前风格库的全部有效风格中选择，不预设任何风格优先或劣后。
+
+选择时先判断适配，再做轮换：
+
+1. 淘汰会削弱目标词语义证据、口播清晰度、动作路径、状态连续性或空间稳定性的风格。
+2. 在剩余风格中，优先选择最近 3 个 item 未使用过的风格。
+3. 在仍可选风格中，优先选择本批次使用次数较少的风格。
+4. 若仍并列，选择最适配当前人物、动作、道具、场景和情绪的风格。
+
+若风格库共有 `S` 个有效风格、批量共有 `N` 个 item，自动轮换时以 `N / S` 为大致分布目标。允许因场景适配产生小幅偏差，但必须主动把使用次数较少且适配的风格纳入后续选择。
+
+批量任务的每条输出必须记录：
+
+- selected_style
+- scene_fit_reason：该风格为什么适配当前人物、动作、道具、场景和语义证据
+- batch_usage_before：选择前本批次该风格已使用次数
+- recent_3_styles：最近 3 条已使用风格
+- rotation_note：本次如何满足轮换要求
+
 ## 输出格式
 
 ### 视觉基调
@@ -54,6 +77,9 @@
 
 ### 最终视觉风格描述
 {一段可直接放进 Seedance prompt 的综合描述}
+
+### 批量轮换记录
+{仅批量任务输出：selected_style / scene_fit_reason / batch_usage_before / recent_3_styles / rotation_note}
 
 
 示例：collection
